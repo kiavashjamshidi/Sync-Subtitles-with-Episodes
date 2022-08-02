@@ -1,9 +1,9 @@
 import os
+import shutil
 
 def createEpisodes(dirPath) -> list:
     episodes = []
     for episode in os.listdir(dirPath):
-        # check if current path is a file
         if os.path.isfile(os.path.join(dirPath, episode)):
             formatEpisode = episode[-4:].lower()
             if formatEpisode == ".mkv" or formatEpisode == ".mp4":
@@ -16,7 +16,6 @@ def createEpisodes(dirPath) -> list:
 def createSubtitles(dirPath) -> list:
     subtitles = []
     for subtitle in os.listdir(dirPath):
-        # check if current path is a file
         if os.path.isfile(os.path.join(dirPath, subtitle)):
             formatSubtitle = subtitle[-4:].lower()
             if formatSubtitle == ".srt":
@@ -33,7 +32,14 @@ def getInput():
 def rename(episodes, subtitles, dirEpisodesPath, dirSubtitlesPath) -> None:
     for (episode, subtitle) in zip(episodes, subtitles):
         print(subtitle + ".srt has changed to -> " + episode + ".srt")
-        os.rename(dirSubtitlesPath + "/" + subtitle + ".srt", dirEpisodesPath + "/" + episode + ".srt")
+        os.rename(os.path.join(dirSubtitlesPath, subtitle) + ".srt", os.path.join(dirEpisodesPath, episode) + ".srt")
+        
+def copyToEpisodesDirectory(subtitles, dirSubtitlesPath, dirEpisodesPath) -> None:
+    try:
+        for fname in subtitles:
+            shutil.copy2(os.path.join(dirSubtitlesPath, fname) + ".srt", dirEpisodesPath)
+    except:
+        pass
     
                 
 if __name__ == "__main__":
@@ -42,4 +48,6 @@ if __name__ == "__main__":
 
     rename(episodes, subtitles, dirEpisodesPath, dirSubtitlesPath)
     
-    print("Done ;)")
+    copyToEpisodesDirectory(subtitles, dirSubtitlesPath, dirEpisodesPath)
+    
+    print("Done :D")
